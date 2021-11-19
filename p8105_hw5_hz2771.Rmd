@@ -71,3 +71,49 @@ Through the plot, we can observe two obvious trends:
 - In experiment group, the values of subjects increased over time in a approximate linear style, while in control group value of subjects basically stay stable.
 
 - In both groups, within the group, subject with relatively high initial value end with relatively high value, and subjects with relatively low initial value end with relatively low value.
+
+
+## Problem 3
+
+### Load data
+
+```{r}
+library(tidyverse)
+
+set.seed(10)
+
+iris_with_missing = iris %>% 
+  map_df(~replace(.x, sample(1:150, 20), NA)) %>%
+  mutate(Species = as.character(Species))
+```
+
+
+### Write function
+
+```{r}
+fill_na = function(vec) {
+  
+  vec_class = class(vec)
+  
+  if (vec_class == "character") {
+    vec = replace_na(vec, "virginica")
+  }else if (vec_class == "numeric") {
+    avg = round(mean(vec, na.rm = TRUE), 2)
+    vec = replace_na(vec, avg)
+  }else{
+    print("wrong input data type!")
+  }
+  
+  return(vec)
+}
+```
+
+### Apply function
+
+```{r}
+iris_filled = iris_with_missing %>% map(fill_na) %>% as_tibble()
+
+iris_filled %>% knitr::kable()
+```
+
+Now all the missing values have been filled.
