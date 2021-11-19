@@ -5,11 +5,69 @@ date: "2021/11/18"
 output: github_document
 ---
 
-## Problem 2
-
-### 
+## Dependencies
 
 ```{r}
-
+library(tidyverse)
+library(purrr)
 ```
 
+
+## Problem 2
+
+### Create dataframe
+
+```{r}
+lgtd = tibble(
+  filenames = list.files("./data/")
+)
+```
+
+### Read in data iteratvely
+
+```{r}
+lgtd = 
+  lgtd %>% 
+  mutate(
+    filepaths = str_c("./data/", filenames)    
+  ) %>% 
+  mutate(
+    data = map(filepaths, read_csv)
+  )
+```
+
+### Tidy the result
+
+```{r}
+lgtd_tidy = 
+  lgtd %>% 
+  mutate(
+    filenames = str_replace(filenames, ".csv", ""),
+    group = str_sub(filenames, 1, 3)
+  ) %>% 
+  unnest() %>% 
+  pivot_longer(names_to = "week", 
+               values_to = "value", 
+               cols = "week_1":"week_8") %>% 
+  mutate(
+    week = str_replace(week, "week_", ""),
+    week = as.numeric(week)
+  ) %>% 
+  select(subject = filenames, group, week, value)
+```
+
+### Make the spaghetti plot
+
+```{r}
+lgtd_tidy %>% 
+  ggplot(aes(x = week, y = value, group = subject, color = group)) +
+  geom_path() +
+  geom_point() +
+  scale_color_viridis_d()
+```
+
+Through the plot, we can observe two obvious trends:
+
+- In experiment group, the values of subjects increased over time in a approximate linear style, while in control group value of subjects basically stay stable.
+
+- In both groups, within the group, subject with relatively high initial value end with relatively high value, and subjects with relatively low initial value end with relatively low value.
