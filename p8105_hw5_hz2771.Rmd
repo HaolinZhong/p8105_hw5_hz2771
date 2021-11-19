@@ -7,7 +7,7 @@ output: github_document
 
 ## Dependencies
 
-```{r}
+```{r, message=FALSE}
 library(tidyverse)
 library(purrr)
 ```
@@ -25,7 +25,7 @@ lgtd = tibble(
 
 ### Read in data iteratvely
 
-```{r}
+```{r, message=FALSE}
 lgtd = 
   lgtd %>% 
   mutate(
@@ -38,7 +38,7 @@ lgtd =
 
 ### Tidy the result
 
-```{r}
+```{r, warning=FALSE}
 lgtd_tidy = 
   lgtd %>% 
   mutate(
@@ -68,9 +68,9 @@ lgtd_tidy %>%
 
 Through the plot, we can observe two obvious trends:
 
-- In experiment group, the values of subjects increased over time in a approximate linear style, while in control group value of subjects basically stay stable.
+- In experiment group, values of subjects increased over time in an approximate linear style, while in control group values of subjects basically stay stable.
 
-- In both groups, within the group, subject with relatively high initial value end with relatively high value, and subjects with relatively low initial value end with relatively low value.
+- In both groups, within the group, subjects with relatively high initial value end with relatively high value, and subjects with relatively low initial value end with relatively low value.
 
 
 ## Problem 3
@@ -78,8 +78,6 @@ Through the plot, we can observe two obvious trends:
 ### Load data
 
 ```{r}
-library(tidyverse)
-
 set.seed(10)
 
 iris_with_missing = iris %>% 
@@ -116,4 +114,4 @@ iris_filled = iris_with_missing %>% map(fill_na) %>% as_tibble()
 iris_filled %>% knitr::kable()
 ```
 
-Now all the missing values have been filled.
+Now all missing values have been filled.
